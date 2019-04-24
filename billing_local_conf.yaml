@@ -1,0 +1,18 @@
+serviceConfig:
+  scheme: http://
+  hostName: 0.0.0.0
+  port:
+  path: /api/billing
+
+loggerConfig:
+  outputDir: ./logs/
+  outputFile: billing.log
+
+databaseConfig:
+  dbUsername:
+  dbPassword:
+  dbHostname:
+  dbPort:
+  dbDriver: com.mysql.cj.jdbc.Driver
+  dbName:
+  dbSettings: ?autoReconnect=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=PST
