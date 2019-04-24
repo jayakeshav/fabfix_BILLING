@@ -6,3 +6,6 @@ build
 
 # Ignore IntelliJ config director
 .idea
+
+# Ignore logs directory
+logs
