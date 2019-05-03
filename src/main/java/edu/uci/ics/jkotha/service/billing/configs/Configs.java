@@ -1,7 +1,7 @@
-package edu.uci.ics.ucinetid.service.billing.configs;
+package edu.uci.ics.jkotha.service.billing.configs;
 
-import edu.uci.ics.ucinetid.service.billing.logger.ServiceLogger;
-import edu.uci.ics.ucinetid.service.billing.models.ConfigsModel;
+import edu.uci.ics.jkotha.service.billing.logger.ServiceLogger;
+import edu.uci.ics.jkotha.service.billing.models.ConfigsModel;
 
 public class Configs {
     private final int MIN_SERVICE_PORT = 1024;

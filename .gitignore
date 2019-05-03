@@ -9,3 +9,6 @@ build
 
 # Ignore logs directory
 logs
+
+# Ignore yaml
+billing_local_conf.yaml

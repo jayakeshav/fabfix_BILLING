@@ -55,4 +55,4 @@ dependencies {
 }
 
 // Define the main class for the application
-mainClassName = 'edu.uci.ics.ucinetid.service.billing.BillingService'
+mainClassName = 'edu.uci.ics.jkotha.service.billing.BillingService'

@@ -1,7 +1,7 @@
 serviceConfig:
   scheme: http://
   hostName: 0.0.0.0
-  port: 6543
+  port: 6243
   path: /api/billing
 
 loggerConfig:
@@ -9,10 +9,10 @@ loggerConfig:
   outputFile: billing.log
 
 databaseConfig:
-  dbUsername:
-  dbPassword:
-  dbHostname:
+  dbUsername: testuser
+  dbPassword: testuser
+  dbHostname: localhost
   dbPort: 3306
   dbDriver: com.mysql.cj.jdbc.Driver
-  dbName:
+  dbName: billingDb
   dbSettings: ?autoReconnect=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=PST
