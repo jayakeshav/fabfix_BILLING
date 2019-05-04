@@ -84,7 +84,7 @@ public class CustomerInsert {
             }
         } catch (SQLException e) {
             ServiceLogger.LOGGER.warning(ExceptionUtils.exceptionStackTraceAsString(e));
-            if (e.getErrorCode() == 1216) {
+            if (e.getErrorCode() == 1216 || e.getErrorCode() == 1452) {
                 ServiceLogger.LOGGER.info("Result Code:" + 331);
                 responseModel = new BasicResponseModel(331);
                 return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
