@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uci.ics.jkotha.service.billing.BillingService;
 import edu.uci.ics.jkotha.service.billing.logger.ServiceLogger;
-import edu.uci.ics.jkotha.service.billing.models.BasicResponseModel;
-import edu.uci.ics.jkotha.service.billing.models.ItemModel;
-import edu.uci.ics.jkotha.service.billing.models.JustEmailReqModel;
-import edu.uci.ics.jkotha.service.billing.models.OrderRetrieveResponseModel;
+import edu.uci.ics.jkotha.service.billing.models.*;
 import edu.uci.ics.jkotha.service.billing.support.FunctionsRequired;
 import org.glassfish.jersey.internal.util.ExceptionUtils;
 
@@ -53,10 +50,11 @@ public class OrderRetrieve {
                 responseModel = new OrderRetrieveResponseModel(332);
                 return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
             }
-            rs.previous();
-            ItemModel[] items = FunctionsRequired.getSaleItems(rs);
+//            rs.previous();
+//            ItemModel[] items = FunctionsRequired.getSaleItems(rs);
+            TransactionModel[] transactions = FunctionsRequired.getTransactions(email);
             ServiceLogger.LOGGER.info("Result Code:" + 3410);
-            responseModel = new OrderRetrieveResponseModel(3410, items);
+            responseModel = new OrderRetrieveResponseModel(3410, transactions);
             return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
         } catch (IOException e) {
             ServiceLogger.LOGGER.warning(ExceptionUtils.exceptionStackTraceAsString(e));

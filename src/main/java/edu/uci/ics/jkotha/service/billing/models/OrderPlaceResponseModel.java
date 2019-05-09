@@ -6,27 +6,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.uci.ics.jkotha.service.billing.support.FunctionsRequired;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OrderRetrieveResponseModel {
-
+public class OrderPlaceResponseModel {
     @JsonProperty(value = "resultCode", required = true)
     private int resultCode;
     @JsonProperty(value = "message", required = true)
     private String message;
-    @JsonProperty(value = "items")
-    private TransactionModel[] items;
+    @JsonProperty(value = "redirectURL")
+    private String redirectURL;
+    @JsonProperty(value = "token")
+    private String token;
 
     @JsonCreator
-    public OrderRetrieveResponseModel(int resultCode) {
+    public OrderPlaceResponseModel(int resultCode, String redirectURL, String token) {
         this.resultCode = resultCode;
         this.message = FunctionsRequired.getMessage(resultCode);
-        items = null;
-    }
-
-    @JsonCreator
-    public OrderRetrieveResponseModel(int resultCode, TransactionModel[] items) {
-        this.resultCode = resultCode;
-        this.message = FunctionsRequired.getMessage(resultCode);
-        this.items = items;
+        this.redirectURL = redirectURL;
+        this.token = token;
     }
 
     @JsonProperty
@@ -40,7 +35,12 @@ public class OrderRetrieveResponseModel {
     }
 
     @JsonProperty
-    public TransactionModel[] getItems() {
-        return items;
+    public String getRedirectURL() {
+        return redirectURL;
+    }
+
+    @JsonProperty
+    public String getToken() {
+        return token;
     }
 }
