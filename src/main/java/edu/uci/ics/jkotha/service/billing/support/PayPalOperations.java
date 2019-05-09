@@ -28,7 +28,7 @@ public class PayPalOperations {
         String hostName = configs.getHostName();
         int port = configs.getPort();
         String path = configs.getPath();
-        URI uri = UriBuilder.fromUri(scheme + "127.0.0.1" + path).port(port).build();
+        URI uri = UriBuilder.fromUri(scheme + hostName + path).port(port).build();
         Amount amount = new Amount();
         DecimalFormat df = new DecimalFormat("0.00");
         amount.setCurrency("USD");

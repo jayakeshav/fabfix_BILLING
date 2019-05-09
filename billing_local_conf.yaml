@@ -1,6 +1,6 @@
 serviceConfig:
   scheme: http://
-  hostName: 0.0.0.0
+  hostName: localhost
   port: 6243
   path: /api/billing
 
