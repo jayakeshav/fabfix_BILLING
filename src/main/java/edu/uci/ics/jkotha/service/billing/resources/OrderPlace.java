@@ -56,7 +56,7 @@ public class OrderPlace {
                 return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
             }
 
-            String sum = "select sum(all quantity*(unit_price*(1-discount/100)) ) as total from (" +
+            String sum = "select sum(all quantity*unit_price*discount) as total from (" +
                     "              select movieId, quantity from carts where email = ? " +
                     "                ) as a" +
                     ",movie_prices as mp where mp.movieId = a.movieId;";
