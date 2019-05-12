@@ -1,3 +1,5 @@
+drop procedure if exists insert_sales_transactions;
+
 delimiter //
 create procedure insert_sales_transactions(
 in email1 varchar(50),
