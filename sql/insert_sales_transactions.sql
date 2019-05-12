@@ -1,3 +1,5 @@
+use cs122b_db59;
+
 drop procedure if exists insert_sales_transactions;
 
 delimiter //
