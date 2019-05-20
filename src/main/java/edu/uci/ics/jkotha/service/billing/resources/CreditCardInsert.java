@@ -30,7 +30,8 @@ public class CreditCardInsert {
     public Response cardInsert(@Context HttpHeaders headers, String jsonText) {
 
         String emailHeader = headers.getHeaderString("email");
-        String sessionId = headers.getHeaderString("sessionId");
+        String sessionId = headers.getHeaderString("sessionID");
+        String transactionId = headers.getHeaderString("transactionID");
         ServiceLogger.LOGGER.info("Credit-card/insert page requested:");
 
         CreditCardModel requestModel;
@@ -47,19 +48,19 @@ public class CreditCardInsert {
             if (id == null) {
                 ServiceLogger.LOGGER.info("Result Code:" + 321);
                 responseModel = new BasicResponseModel(321);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).header("transactionID", transactionId).entity(responseModel).build();
             } else if (!(id.length() <= 20 && id.length() >= 16)) {
                 ServiceLogger.LOGGER.info("Result Code:" + 321);
                 responseModel = new BasicResponseModel(321);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).header("transactionID", transactionId).entity(responseModel).build();
             } else if (!id.matches("\\d+")) {
                 ServiceLogger.LOGGER.info("Result Code:" + 322);
                 responseModel = new BasicResponseModel(322);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).header("transactionID", transactionId).entity(responseModel).build();
             } else if (!expiration.after(new Date())) {
                 ServiceLogger.LOGGER.info("Result Code:" + 323);
                 responseModel = new BasicResponseModel(323);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).header("transactionID", transactionId).entity(responseModel).build();
             }
             String statement = "insert into creditcards(id, firstName, lastName, expiration) values (?,?,?,?)";
             PreparedStatement query = BillingService.getCon().prepareStatement(statement);
@@ -70,27 +71,27 @@ public class CreditCardInsert {
             query.execute();
             ServiceLogger.LOGGER.info("Result Code:" + 3200);
             responseModel = new BasicResponseModel(3200);
-            return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+            return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).header("transactionID", transactionId).entity(responseModel).build();
         } catch (IOException e) {
             ServiceLogger.LOGGER.warning(ExceptionUtils.exceptionStackTraceAsString(e));
             if (e instanceof JsonParseException) {
                 ServiceLogger.LOGGER.info("Result Code:" + -3);
                 responseModel = new BasicResponseModel(-3);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).header("transactionID", transactionId).entity(responseModel).build();
             } else if (e instanceof JsonMappingException) {
                 ServiceLogger.LOGGER.info("Result Code:" + -2);
                 responseModel = new BasicResponseModel(-2);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).header("transactionID", transactionId).entity(responseModel).build();
             }
         } catch (SQLException e) {
             ServiceLogger.LOGGER.warning(ExceptionUtils.exceptionStackTraceAsString(e));
             if (e.getErrorCode() == 1062) {
                 ServiceLogger.LOGGER.info("Result Code:" + 325);
                 responseModel = new BasicResponseModel(325);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).header("transactionID", transactionId).entity(responseModel).build();
             }
         }
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).header("email", emailHeader).header("sessionId", sessionId).build();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).build();
     }
 
 }

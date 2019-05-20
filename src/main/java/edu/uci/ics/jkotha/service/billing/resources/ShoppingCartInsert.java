@@ -29,7 +29,8 @@ public class ShoppingCartInsert {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response cartInsert(@Context HttpHeaders headers, String jsonText) {
         String emailHeader = headers.getHeaderString("email");
-        String sessionId = headers.getHeaderString("sessionId");
+        String sessionId = headers.getHeaderString("sessionID");
+        String transactionId = headers.getHeaderString("transactionID");
         ServiceLogger.LOGGER.info("cart/insert page requested:");
         CartInsertUpdateReqModel requestModel;
         BasicResponseModel responseModel;
@@ -44,19 +45,19 @@ public class ShoppingCartInsert {
             if (email == null) {
                 ServiceLogger.LOGGER.info("Result Code:" + -10);
                 responseModel = new BasicResponseModel(-10);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             } else if (email.length() == 0 | email.length() > 50) {
                 ServiceLogger.LOGGER.info("Result Code:" + -10);
                 responseModel = new BasicResponseModel(-10);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             } else if (!FunctionsRequired.isValidEmail(email)) {
                 ServiceLogger.LOGGER.info("Result Code:" + -11);
                 responseModel = new BasicResponseModel(-11);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             } else if (quantity <= 0) {
                 ServiceLogger.LOGGER.info("Result Code:" + 33);
                 responseModel = new BasicResponseModel(33);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).header("transactionID", transactionId).entity(responseModel).build();
             }
 
             String statement1 = "insert into carts(email, movieId, quantity) values (?,?,?)";
@@ -67,26 +68,26 @@ public class ShoppingCartInsert {
             query1.execute();
             ServiceLogger.LOGGER.info("Result Code:" + 3100);
             responseModel = new BasicResponseModel(3100);
-            return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+            return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).header("transactionID", transactionId).entity(responseModel).build();
 
         } catch (IOException e) {
             ServiceLogger.LOGGER.warning(ExceptionUtils.exceptionStackTraceAsString(e));
             if (e instanceof JsonParseException) {
                 ServiceLogger.LOGGER.info("Result Code:" + -3);
                 responseModel = new BasicResponseModel(-3);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).header("transactionID", transactionId).entity(responseModel).build();
             } else if (e instanceof JsonMappingException) {
                 ServiceLogger.LOGGER.info("Result Code:" + -2);
                 responseModel = new BasicResponseModel(-2);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).header("transactionID", transactionId).entity(responseModel).build();
             }
         } catch (SQLException e) {
             if (e.getErrorCode() == 1062) {
                 ServiceLogger.LOGGER.info("Result Code:" + 311);
                 responseModel = new BasicResponseModel(311);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).header("transactionID", transactionId).entity(responseModel).build();
             }
         }
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).header("email", emailHeader).header("sessionId", sessionId).build();
+        return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).header("transactionID", transactionId).build();
     }
 }

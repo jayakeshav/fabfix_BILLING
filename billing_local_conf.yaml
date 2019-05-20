@@ -1,7 +1,7 @@
 serviceConfig:
   scheme: http://
   hostName: localhost
-  port: 6243
+  port: 6246
   path: /api/billing
 
 loggerConfig:

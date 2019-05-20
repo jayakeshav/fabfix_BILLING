@@ -35,7 +35,8 @@ public class CreditCardRetrieve {
     public Response cardRetrieve(@Context HttpHeaders headers, String jsonText) {
 
         String emailHeader = headers.getHeaderString("email");
-        String sessionId = headers.getHeaderString("sessionId");
+        String sessionId = headers.getHeaderString("sessionID");
+        String transactionId = headers.getHeaderString("transactionID");
         ServiceLogger.LOGGER.info("Credit-card/retrieve page requested:");
 
         JustId requestModel;
@@ -48,7 +49,7 @@ public class CreditCardRetrieve {
             if (id == null) {
                 ServiceLogger.LOGGER.info("Result Code:" + 321);
                 responseModel = new CardRetrieveResponseModel(321);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             } else if (!(id.length() <= 20 && id.length() >= 16)) {
                 ServiceLogger.LOGGER.info("Result Code:" + 321);
                 responseModel = new CardRetrieveResponseModel(321);

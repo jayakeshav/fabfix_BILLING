@@ -33,7 +33,8 @@ public class CustomerRetrieve {
     public Response customerUpdate(@Context HttpHeaders headers, String jsonText) {
 
         String emailHeader = headers.getHeaderString("email");
-        String sessionId = headers.getHeaderString("sessionId");
+        String sessionId = headers.getHeaderString("sessionID");
+        String transactionId = headers.getHeaderString("transactionID");
         ServiceLogger.LOGGER.info("Customer/update page requested:");
 
         JustEmailReqModel requestModel;
@@ -51,7 +52,7 @@ public class CustomerRetrieve {
             if (!rs.next()) {
                 ServiceLogger.LOGGER.info("Result Code:" + 332);
                 responseModel = new CustomerRetrieveResponseModel(332);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
 
             }
             CustomerModel customer = new CustomerModel(
@@ -63,21 +64,21 @@ public class CustomerRetrieve {
             );
             ServiceLogger.LOGGER.info("Result Code:" + 3320);
             responseModel = new CustomerRetrieveResponseModel(3320, customer);
-            return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+            return Response.status(Response.Status.OK).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
         } catch (IOException e) {
             ServiceLogger.LOGGER.warning(ExceptionUtils.exceptionStackTraceAsString(e));
             if (e instanceof JsonParseException) {
                 ServiceLogger.LOGGER.info("Result Code:" + -3);
                 responseModel = new CustomerRetrieveResponseModel(-3);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             } else if (e instanceof JsonMappingException) {
                 ServiceLogger.LOGGER.info("Result Code:" + -2);
                 responseModel = new CustomerRetrieveResponseModel(-2);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             }
         } catch (SQLException e) {
             ServiceLogger.LOGGER.warning(ExceptionUtils.exceptionStackTraceAsString(e));
         }
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).header("email", emailHeader).header("sessionId", sessionId).build();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).build();
     }
 }

@@ -32,12 +32,13 @@ public class OrderComplete {
         ServiceLogger.LOGGER.info("order/complete page requested");
         String email = headers.getHeaderString("email");
         String sessionId = headers.getHeaderString("sessionID");
+        String transactionId = headers.getHeaderString("transactionID");
         BasicResponseModel responseModel;
 
         if (token == null) {
             responseModel = new BasicResponseModel(3421);
             ServiceLogger.LOGGER.info("Result code:" + 3421);
-            return Response.status(Response.Status.OK).header("email", email).header("sessionId", sessionId).entity(responseModel).build();
+            return Response.status(Response.Status.OK).header("email", email).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
         }
 
         Payment payment = new Payment();
@@ -49,23 +50,23 @@ public class OrderComplete {
         try {
             APIContext apiContext = new APIContext(PayPalOperations.clientId, PayPalOperations.clientSecret, "sandbox");
             Payment createdPayment = payment.execute(apiContext, paymentExecution);
-            String transactionId = createdPayment.getTransactions().get(0).getRelatedResources().get(0).getSale().getId();
+            String transactionId1 = createdPayment.getTransactions().get(0).getRelatedResources().get(0).getSale().getId();
 
             String updateString = "update transactions set transactionId =? where token = ?";
             PreparedStatement updateStatement = BillingService.getCon().prepareStatement(updateString);
-            updateStatement.setString(1, transactionId);
+            updateStatement.setString(1, transactionId1);
             updateStatement.setString(2, token);
             updateStatement.executeUpdate();
 
             responseModel = new BasicResponseModel(3420);
             ServiceLogger.LOGGER.info("Result code:" + 3420);
-            return Response.status(Response.Status.OK).header("email", email).header("sessionId", sessionId).entity(responseModel).build();
+            return Response.status(Response.Status.OK).header("email", email).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
 
         } catch (PayPalRESTException | SQLException e) {
             ServiceLogger.LOGGER.warning(ExceptionUtils.exceptionStackTraceAsString(e));
         }
 
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).header("email", email).header("sessionId", sessionId).build();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).header("email", email).header("transactionID", transactionId).header("sessionId", sessionId).build();
     }
 
 }

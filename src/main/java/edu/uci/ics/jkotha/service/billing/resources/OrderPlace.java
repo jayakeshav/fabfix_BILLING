@@ -36,6 +36,7 @@ public class OrderPlace {
 
         String emailHeader = headers.getHeaderString("email");
         String sessionId = headers.getHeaderString("sessionId");
+        String transactionId = headers.getHeaderString("transactionID");
         ServiceLogger.LOGGER.info("Order/place page requested:");
 
         JustEmailReqModel requestModel;
@@ -53,7 +54,7 @@ public class OrderPlace {
             if (!rs.next()) {
                 ServiceLogger.LOGGER.info("Result Code:" + 332);
                 responseModel = new BasicResponseModel(332);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             }
 
             String sum = "select sum(all quantity*unit_price*discount) as total from (" +
@@ -68,13 +69,13 @@ public class OrderPlace {
             if (total == 0.0) {
                 ServiceLogger.LOGGER.info("Result Code:" + 341);
                 responseModel = new BasicResponseModel(341);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             }
             ServiceLogger.LOGGER.info("total:" + total);
             responseModel1 = PayPalOperations.makePayment(total);
             if (responseModel1.getResultCode() == 342) {
                 ServiceLogger.LOGGER.info("Result Code:" + 342);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel1).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel1).build();
             }
             String token = responseModel1.getToken();
             String statement1 = "select movieId,quantity from carts where email=?";
@@ -97,26 +98,26 @@ public class OrderPlace {
             FunctionsRequired.clearCart(email);
             ServiceLogger.LOGGER.info("Result Code:" + 3400);
 //            responseModel = new BasicResponseModel(3400);
-            return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel1).build();
+            return Response.status(Response.Status.OK).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel1).build();
         } catch (IOException e) {
             ServiceLogger.LOGGER.warning(ExceptionUtils.exceptionStackTraceAsString(e));
             if (e instanceof JsonParseException) {
                 ServiceLogger.LOGGER.info("Result Code:" + -3);
                 responseModel = new BasicResponseModel(-3);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             } else if (e instanceof JsonMappingException) {
                 ServiceLogger.LOGGER.info("Result Code:" + -2);
                 responseModel = new BasicResponseModel(-2);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             }
         } catch (SQLException e) {
             ServiceLogger.LOGGER.warning(ExceptionUtils.exceptionStackTraceAsString(e));
             if (e.getErrorCode() == 1216) {
                 ServiceLogger.LOGGER.info("Result Code:" + 332);
                 responseModel = new BasicResponseModel(332);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             }
         }
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).header("email", emailHeader).header("sessionId", sessionId).build();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).build();
     }
 }

@@ -32,7 +32,8 @@ public class ShoppingCartDelete {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response cartDelete(@Context HttpHeaders headers, String jsonText) {
         String emailHeader = headers.getHeaderString("email");
-        String sessionId = headers.getHeaderString("sessionId");
+        String sessionId = headers.getHeaderString("sessionID");
+        String transactionId = headers.getHeaderString("transactionID");
         ServiceLogger.LOGGER.info("cart/delete page requested:");
         CartDeleteReqModel requestModel;
         BasicResponseModel responseModel;
@@ -46,15 +47,15 @@ public class ShoppingCartDelete {
             if (email == null) {
                 ServiceLogger.LOGGER.info("Result Code:" + -10);
                 responseModel = new BasicResponseModel(-10);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             } else if (email.length() == 0 | email.length() > 50) {
                 ServiceLogger.LOGGER.info("Result Code:" + -10);
                 responseModel = new BasicResponseModel(-10);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             } else if (!FunctionsRequired.isValidEmail(email)) {
                 ServiceLogger.LOGGER.info("Result Code:" + -11);
                 responseModel = new BasicResponseModel(-11);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             }
 
             String statement4 = "select * from  carts where email = ? and movieId = ?";
@@ -70,11 +71,11 @@ public class ShoppingCartDelete {
                 query5.execute();
                 ServiceLogger.LOGGER.info("Result Code:" + 3120);
                 responseModel = new BasicResponseModel(3120);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             } else {
                 ServiceLogger.LOGGER.info("Result Code:" + 312);
                 responseModel = new BasicResponseModel(312);
-                return Response.status(Response.Status.OK).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.OK).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
 
             }
         } catch (IOException e) {
@@ -82,15 +83,15 @@ public class ShoppingCartDelete {
             if (e instanceof JsonParseException) {
                 ServiceLogger.LOGGER.info("Result Code:" + -3);
                 responseModel = new BasicResponseModel(-3);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             } else if (e instanceof JsonMappingException) {
                 ServiceLogger.LOGGER.info("Result Code:" + -2);
                 responseModel = new BasicResponseModel(-2);
-                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("sessionId", sessionId).entity(responseModel).build();
+                return Response.status(Response.Status.BAD_REQUEST).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             }
         } catch (SQLException e) {
             ServiceLogger.LOGGER.warning(ExceptionUtils.exceptionStackTraceAsString(e));
         }
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).header("email", emailHeader).header("sessionId", sessionId).build();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).build();
     }
 }
