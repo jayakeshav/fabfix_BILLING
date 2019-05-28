@@ -3,10 +3,7 @@ package edu.uci.ics.jkotha.service.billing.support;
 import com.mysql.cj.xdevapi.SqlDataResult;
 import edu.uci.ics.jkotha.service.billing.BillingService;
 import edu.uci.ics.jkotha.service.billing.logger.ServiceLogger;
-import edu.uci.ics.jkotha.service.billing.models.BasicResponseModel;
-import edu.uci.ics.jkotha.service.billing.models.CartInsertUpdateReqModel;
-import edu.uci.ics.jkotha.service.billing.models.ItemModel;
-import edu.uci.ics.jkotha.service.billing.models.TransactionModel;
+import edu.uci.ics.jkotha.service.billing.models.*;
 import org.glassfish.jersey.internal.util.ExceptionUtils;
 
 import java.sql.PreparedStatement;
@@ -109,8 +106,8 @@ public class FunctionsRequired {
         return true;
     }
 
-    public static CartInsertUpdateReqModel[] getCartItems(ResultSet rs) {
-        ArrayList<CartInsertUpdateReqModel> list = new ArrayList<>();
+    public static CartRetrieveItemModel[] getCartItems(ResultSet rs) {
+        ArrayList<CartRetrieveItemModel> list = new ArrayList<>();
         try {
             if (!rs.next()) {
                 return null;
@@ -118,10 +115,13 @@ public class FunctionsRequired {
                 rs.previous();
             }
             while (rs.next()) {
-                CartInsertUpdateReqModel item = new CartInsertUpdateReqModel(
+                CartRetrieveItemModel item = new CartRetrieveItemModel(
                         rs.getString("email"),
                         rs.getString("movieId"),
-                        rs.getInt("quantity")
+                        rs.getInt("quantity"),
+                        rs.getFloat("price"),
+                        rs.getFloat("discount"),
+                        rs.getString("title")
                 );
                 list.add(item);
             }
@@ -133,7 +133,7 @@ public class FunctionsRequired {
         if (list.size() == 0)
             return null;
 
-        CartInsertUpdateReqModel[] items = new CartInsertUpdateReqModel[list.size()];
+        CartRetrieveItemModel[] items = new CartRetrieveItemModel[list.size()];
         for (int i = 0; i < list.size(); ++i) {
             items[i] = list.get(i);
         }

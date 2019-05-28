@@ -13,13 +13,13 @@ public class CartRetrieveResponseModel {
     @JsonProperty(value = "message", required = true)
     private String message;
     @JsonProperty(value = "items")
-    private CartInsertUpdateReqModel[] items;
+    private CartRetrieveItemModel[] items;
 
     @JsonCreator
     public CartRetrieveResponseModel(
             @JsonProperty(value = "resultCode", required = true) int resultCode,
             @JsonProperty(value = "message", required = true) String message,
-            @JsonProperty(value = "items") CartInsertUpdateReqModel[] items) {
+            @JsonProperty(value = "items") CartRetrieveItemModel[] items) {
         this.resultCode = resultCode;
         this.message = message;
         this.items = items;
@@ -28,7 +28,7 @@ public class CartRetrieveResponseModel {
     @JsonCreator
     public CartRetrieveResponseModel(
             @JsonProperty(value = "resultCode", required = true) int resultCode,
-            @JsonProperty(value = "items", required = true) CartInsertUpdateReqModel[] items) {
+            @JsonProperty(value = "items", required = true) CartRetrieveItemModel[] items) {
         this.resultCode = resultCode;
         this.message = FunctionsRequired.getMessage(resultCode);
         this.items = items;
@@ -52,7 +52,7 @@ public class CartRetrieveResponseModel {
     }
 
     @JsonProperty
-    public CartInsertUpdateReqModel[] getItems() {
+    public CartRetrieveItemModel[] getItems() {
         return items;
     }
 }

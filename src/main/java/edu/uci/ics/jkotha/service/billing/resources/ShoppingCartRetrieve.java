@@ -60,11 +60,13 @@ public class ShoppingCartRetrieve {
             query6.setString(1, email);
             ResultSet rs = query6.executeQuery();
             if (rs.next()) {
-                String statement7 = "select email,movieId,quantity from carts where email = ?";
+                String statement7 = "select p.title,p.discount,p.price,m.movieId,m.quantity,m.email from prices as p," +
+                        "(select movieId,quantity,email from carts where email=?)" +
+                        "as m where p.movieId=m.movieId;";
                 PreparedStatement query7 = BillingService.getCon().prepareStatement(statement7);
                 query7.setString(1, email);
                 rs = query7.executeQuery();
-                CartInsertUpdateReqModel[] items = FunctionsRequired.getCartItems(rs);
+                CartRetrieveItemModel[] items = FunctionsRequired.getCartItems(rs);
                 ServiceLogger.LOGGER.info("Result Code:" + 3130);
                 responseModel = new CartRetrieveResponseModel(3130, items);
                 return Response.status(Response.Status.OK).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
