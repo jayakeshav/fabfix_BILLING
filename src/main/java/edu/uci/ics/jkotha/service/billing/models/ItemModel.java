@@ -8,6 +8,8 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemModel {
 
+    @JsonProperty(value = "movieTitle", required = true)
+    private String movieTitle;
     @JsonProperty(value = "email", required = true)
     private String email;
     @JsonProperty(value = "movieId", required = true)
@@ -24,12 +26,14 @@ public class ItemModel {
 
     @JsonCreator
     public ItemModel(
+            @JsonProperty(value = "movieTitle", required = true) String movieTitle,
             @JsonProperty(value = "email", required = true) String email,
             @JsonProperty(value = "movieId", required = true) String movieId,
             @JsonProperty(value = "quantity", required = true) int quantity,
             @JsonProperty(value = "unit_price", required = true) float unit_price,
             @JsonProperty(value = "discount", required = true) float discount,
             @JsonProperty(value = "saleDate", required = true) Date saleDate) {
+        this.movieTitle = movieTitle;
         this.email = email;
         this.movieId = movieId;
         this.quantity = quantity;
@@ -40,10 +44,12 @@ public class ItemModel {
 
     @JsonCreator
     public ItemModel(
+            @JsonProperty(value = "movieTitle", required = true) String movieTitle,
             @JsonProperty(value = "email", required = true) String email,
             @JsonProperty(value = "movieId", required = true) String movieId,
             @JsonProperty(value = "quantity", required = true) int quantity,
             @JsonProperty(value = "saleDate", required = true) Date saleDate) {
+        this.movieTitle = movieTitle;
         this.email = email;
         this.movieId = movieId;
         this.quantity = quantity;
@@ -85,5 +91,10 @@ public class ItemModel {
         DecimalFormat df = new DecimalFormat("0.00");
         float res = quantity * (unit_price * (1 - (discount / 100)));
         return df.format(res);
+    }
+
+    @JsonProperty
+    public String getMovieTitle() {
+        return movieTitle;
     }
 }

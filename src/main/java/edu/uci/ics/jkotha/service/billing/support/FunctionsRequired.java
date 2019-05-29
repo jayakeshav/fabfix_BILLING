@@ -149,7 +149,7 @@ public class FunctionsRequired {
                 rs.previous();
             }
             while (rs.next()) {
-                ItemModel item = new ItemModel(
+                ItemModel item = new ItemModel(null,
                         rs.getString("email"),
                         rs.getString("movieId"),
                         rs.getInt("quantity"),
@@ -221,18 +221,18 @@ public class FunctionsRequired {
     private static ItemModel[] getItemsForTId(String transactionId) {
         ItemModel[] res;
         ArrayList<ItemModel> list = new ArrayList<>();
-        String statement = "select s.email, s.movieId, s.quantity, s.saleDate ,mp.unit_price, mp.discount from sales as s, movie_prices as mp ,transactions as t " +
+        String statement = "select s.email, s.movieId, s.quantity, s.saleDate ,mp.price, mp.discount,mp.title from sales as s, prices as mp ,transactions as t " +
                 " where s.id = t.sId and s.movieId=mp.movieId and t.transactionId = ?";
         try {
             PreparedStatement query = BillingService.getCon().prepareStatement(statement);
             query.setString(1, transactionId);
             ResultSet rs = query.executeQuery();
             while (rs.next()) {
-                ItemModel model = new ItemModel(
+                ItemModel model = new ItemModel(rs.getString("title"),
                         rs.getString("email"),
                         rs.getString("movieId"),
                         rs.getInt("quantity"),
-                        get2DecFloat(rs.getFloat("unit_price")),
+                        get2DecFloat(rs.getFloat("price")),
                         get2DecFloat(rs.getFloat("discount")),
                         new Date(rs.getDate("saleDate").getTime())
                 );

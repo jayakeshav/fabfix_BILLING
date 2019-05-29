@@ -57,10 +57,10 @@ public class OrderPlace {
                 return Response.status(Response.Status.OK).header("email", emailHeader).header("transactionID", transactionId).header("sessionId", sessionId).entity(responseModel).build();
             }
 
-            String sum = "select sum(all quantity*unit_price*discount) as total from (" +
+            String sum = "select sum(all quantity*price*discount) as total from (" +
                     "              select movieId, quantity from carts where email = ? " +
                     "                ) as a" +
-                    ",movie_prices as mp where mp.movieId = a.movieId;";
+                    ",prices as mp where mp.movieId = a.movieId;";
             PreparedStatement sumQuery = BillingService.getCon().prepareStatement(sum);
             sumQuery.setString(1, email);
             rs = sumQuery.executeQuery();
